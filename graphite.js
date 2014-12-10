@@ -1,5 +1,3 @@
-"use strict"
-
 var dgram = require('dgram');
 
 var Graphite = function(apiKey) {
@@ -14,35 +12,21 @@ Graphite.prototype.sendMetric = function(name, count, timestamp) {
 	var metrics = {
 		name: name,
 		count: count,
-		timestamp: timestamp, 
+		timestamp: timestamp
 	};
 
-	this.sendMetrics(metrics);
+	this.sendMetrics([metrics]);
 };
 
 Graphite.prototype.sendMetrics = function(metrics) {
-	if (!Array.isArray(metrics)) {
-		var metricsArray = [];
 
-		var metricNames = Object.keys(metrics);
-
-		metricNames.forEach(function(key) {
-			metricsArray.push({
-				name: key,
-				count: metrics[key],
-			});
-		});
-
-		metrics = metricsArray;
-	}
-	
-	var message = '',
-		apiKey = this.apiKey;
+	var message = '';
+	var apiKey = this.apiKey;
 
 	metrics.forEach(function(metricObject) {
-		var key = metricObject.name,
-			value = metricObject.count,
-			timestamp = metricObject.timestamp || '';
+		var key = metricObject.name;
+		var value = metricObject.count;
+		var timestamp = metricObject.timestamp || '';
 
 		message += apiKey + '.' + key + ' ' + value + ' ' + timestamp + '\n';
 	});
